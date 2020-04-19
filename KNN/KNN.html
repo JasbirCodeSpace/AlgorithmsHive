@@ -46,7 +46,7 @@
       $csvHeader = null;
       $trainTable = null;
       $testTable = null;
-      $numOfAttributes = 0;
+      $numOfColumns = 0;
       $("#form").submit(function(e) {
         e.preventDefault();
         var fileLink = $('input').val();
@@ -61,7 +61,7 @@
               $('#error').hide();
               csvData = data.csvToArray(); // convert csv data to array
               csvHeader = csvData[0];
-              numOfAttributes = csvHeader.length;
+              numOfColumns = csvHeader.length;
               csvData = csvData.slice(1,csvData.length); // slice excluding header
               preProcessing(csvData);
             },
@@ -94,7 +94,7 @@
         var train_labels = [];
         var predicted_labels = [];
         for (var i = 0; i < train_data.length; i++) {
-          train_labels[i] = train_data[i][numOfAttributes-1]
+          train_labels[i] = train_data[i][numOfColumns-1]
         }
         for (var i = 0; i < test_data.length; i++) {
           predicted_labels.push(KNN(train_data, test_data[i], 7));
@@ -150,7 +150,7 @@
         }
         for (var i = 0; i < train_sample.length; i++) {
           dist_array[i][0] = i;
-          dist_array[i][1] = train_sample[i][numOfAttributes-1];
+          dist_array[i][1] = train_sample[i][numOfColumns-1];
           dist_array[i][2] = distance(train_sample[i], test)
         }
     
@@ -197,8 +197,8 @@
     
       function Accuracy(){
     
-        let actual_labels = testTable.column(numOfAttributes-1).data();
-        let predicted_labels = testTable.column(numOfAttributes).data();
+        let actual_labels = testTable.column(numOfColumns-1).data();
+        let predicted_labels = testTable.column(numOfColumns).data();
         let sum=0;
         for (var i = 0; i < actual_labels.length; i++) {
           if(actual_labels[i]==predicted_labels[i])
