@@ -48,7 +48,9 @@
           dataType: "text",
           success: function(data) {
             $('#error').hide();
-            csvData = data.csvToArray().slice(1, 100);
+            csvData = data.csvToArray();
+            console.log(csvData);
+            csvData = csvData.slice(1,parseInt(0.75*csvData.length));
             preProcessing(csvData);
             $('h5').show();
              $('#test').show();
