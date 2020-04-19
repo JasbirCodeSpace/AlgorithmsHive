@@ -1,27 +1,19 @@
-file <- readline(prompt = "Enter file link : ")
-#http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data
-Iris_Data = read.csv(file, header = FALSE)
-Iris_Data = Iris_Data[1:100, ]
-names(Iris_Data) = c("sepal_length",
-                     "sepal_width",
-                     "petal_length",
-                     "petal_width",
-                     "species")
-train_size = floor(0.50 * nrow(Iris_Data))
+DataSet = read.csv("https://datahub.io/machine-learning/iris/r/iris.csv", header = TRUE)
+
+train_size = floor(0.80 * nrow(DataSet))
 set.seed(1223)
-train_index = sample(1:nrow(Iris_Data), size = train_size)
-train_sample = Iris_Data[train_index, ]
-test_sample = Iris_Data[-train_index, ]
+train_index = sample(1:nrow(DataSet), size = train_size)
+
+train_sample = DataSet[train_index, ]
+test_sample = DataSet[-train_index, ]
+test_index = as.numeric(row.names(test_sample))
 train_label = train_sample[, 5]
 
 # distance calculation method
 distance <- function(train, test) {
   dist = 0
-  
   for (i in 2:ncol(train) - 1) {
-    dist = dist + (train[, i] - test[, i]) ^ {
-      2
-    }
+    dist = dist + (train[, i] - test[, i])**2
   }
   return(sqrt(dist))
 }
@@ -29,16 +21,18 @@ distance <- function(train, test) {
 # KNN Method
 KNN <- function(test, N) {
   dist_array = data.frame()
-  for (i in 1:nrow(train_sample)) {
-    dist_array[i, 1] = distance(train_sample[i, ], test[1, ])
-    dist_array[i, 2] = train_index[i]
-    
+  i=1
+  for (j in train_index) {
+    dist_array[i, 1] =  j
+    dist_array[i, 2] = distance(DataSet[j, ], test[1,])
+    dist_array[i,3] = DataSet[j,ncol(train_sample)]
+    i = i+1
   }
-  dist_array = dist_array[order(dist_array$V1), ]
-  print(dist_array)
+  dist_array = dist_array[order(dist_array$V2), ]
+
   labels = data.frame()
   for (i in 1:N) {
-    labels[i, 1] = Iris_Data[dist_array[i, 2], 5]
+    labels[i, 1] = DataSet[dist_array[i, 1], 5]
     
   }
   table_data = table(labels)
@@ -46,6 +40,16 @@ KNN <- function(test, N) {
   return(new_label)
 }
 
-test_data = test_sample[37, ]          # any random test sample
-new_label = KNN(test_data, 25)         # 25 nearest neighbours
-test_data[, 5] = new_label             # assign the predicted label
+labels_frame = data.frame()
+j=1
+for (i in test_index) {
+test_data = test_sample[i, ]
+new_label = KNN(test_data, 7)
+labels_frame[j,1] = test_data[,5]
+print(test_data[,5])
+print(labels_frame[j,1])
+labels_frame[j,2] = new_label
+}
+
+print(labels_frame)
+
