@@ -6,7 +6,7 @@ train_index = sample(1:nrow(DataSet), size = train_size)
 
 train_sample = DataSet[train_index, ]
 test_sample = DataSet[-train_index, ]
-test_index = as.numeric(row.names(test_sample))
+test_index = row.names(test_sample)
 train_label = train_sample[, 5]
 
 # distance calculation method
@@ -17,6 +17,19 @@ distance <- function(train, test) {
   }
   return(sqrt(dist))
 }
+Accuracy<-function(labels_frame){
+  sum=0
+  for (i in 1:nrow(labels_frame)) {
+    if(labels_frame[i,1] == labels_frame[i,2]){
+      sum = sum+1
+    }
+
+  }
+  
+  return((sum/nrow(labels_frame))*100)
+}
+
+
 
 # KNN Method
 KNN <- function(test, N) {
@@ -43,13 +56,10 @@ KNN <- function(test, N) {
 labels_frame = data.frame()
 j=1
 for (i in test_index) {
-test_data = test_sample[i, ]
-new_label = KNN(test_data, 7)
-labels_frame[j,1] = test_data[,5]
-print(test_data[,5])
-print(labels_frame[j,1])
+new_label = KNN(test_sample[i,], 7)
+labels_frame[j,1] = test_sample[i,5]
 labels_frame[j,2] = new_label
+j = j+1
 }
 
-print(labels_frame)
-
+cat("Accuracy",Accuracy(labels_frame))
