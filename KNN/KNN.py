@@ -1,53 +1,42 @@
-import csv
-import urllib2
-import random
-
-# def distance(train,test):
-#     dist =0
-#     for value in train:
-#         dist+=pow((value - test), 2)
-# def KNN(train_data,test_data,N):
-#     pass
-#
-#
-# def preProcessing(results):
-#     random.shuffle(results)
-#     train_data = results[0:50]
-#     test_data = results[50:100]
-#
-#     train_labels = []
-#     for value in train_data:
-#         train_labels.append(value[4])
-#
-#     KNN(train_data,test_data[0], 25);
-#
-#
-# url = 'https://datahub.io/machine-learning/iris/r/iris.csv'
-# response = urllib2.urlopen(url)
-# rows = csv.reader(response)
-# results = []
-# for row in rows:
-#     results.append(row)
-# results = results[1:101]
-# preProcessing(results)
-
-
-#
-# import csv
-#
-# results = []
-# with urllib2.urlopen("https://datahub.io/machine-learning/iris/r/iris.csv") as csvfile:
-#     reader = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC) # change contents to floats
-#     for row in reader: # each row is a list
-#         results.append(row)
-#
-# print(results)
-
-
 import pandas as pd
-import io
-import requests
-url="https://datahub.io/machine-learning/iris/r/iris.csv"
-s=requests.get(url).content
-c=pd.read_csv(io.StringIO(s.decode('utf-8')))
-print(c)
+import math
+
+def distance(train,test):
+    dist =0
+    for i in range(1,len(train)-1):
+    	dist+=pow((train[i] - test[i]), 2)
+    return dist
+def KNN(train_samples,test_data,N):
+	dist = pd.DataFrame(columns=["Index","Label","Dist"])
+	i=0
+	for train_row in train_samples.itertuples():
+		dist.loc[i] = [train_row[0],train_row[len(train_row)-1],distance(train_row,test_data)]
+		i = i+1
+	dist  = dist.sort_values(["Dist"],ascending=(True))
+	dist = dist[:N]
+	return dist.loc[:,"Label"].mode()[0]
+
+
+data = pd.read_csv("https://raw.githubusercontent.com/JasbirCodeSpace/AlgorithmsHive/master/KNN/Iris_Dataset.csv")
+train_samples = data.sample(frac=0.8,random_state=1223)
+test_samples = data.drop(train_samples.index)
+
+result = pd.DataFrame(columns=["Actual","Predicted"])
+i=0
+count = 0
+for test_row in test_samples.itertuples():
+	actual = test_row[len(test_row)-1]
+	predicted = KNN(train_samples,test_row,7)
+	if actual == predicted:
+		count = count +1
+	result.loc[i] = [actual,predicted]
+	i = i+1
+print("Accuracy :: "+format((count/len(result))*100,'.2f')+"%")
+print(result)
+
+
+
+
+
+
+
