@@ -17,20 +17,33 @@ public class KNN {
 		return dist;
 	}
 
-	public String KNN_Algo(String[] test_sample,int N){
-		HashMap<Double,String> tempArr = new HashMap<Double,String>();
-			for (int j=0; j < this.Train_Set.size(); j++) {
-			tempArr.put(distance(this.Train_Set.get(j),test_sample),
-				this.Train_Set.get(j)[this.Train_Set.get(j).length-1]);
 
+	public String KNN_Algo(String[] test_sample,int N){
+		Double[] dist = new Double[this.Train_Set.size()];
+		int[] indices = new int[this.Train_Set.size()];
+
+		TreeMap<Double,String> distMap = new TreeMap<Double,String>();
+			for (int j=0; j < this.Train_Set.size(); j++) {
+				distMap.put(distance(this.Train_Set.get(j),test_sample)
+					,this.Train_Set.get(j)[this.Train_Set.get(j).length-1]);
 			}
 
 
-			// Arrays.sort(tempArr,(a,b)->Double.parseDouble(a[0].toString())-Double.parseDouble(b[0].toString()));
-			// tempArr = Arrays.copyOfRange(tempArr,0,N);
-
-			// return Mode(tempArr);
-			return "Na";
+			String[] Labels = new String[N];
+			int j=0;
+			     // Get a set of the entries on the sorted map
+    Set set = distMap.entrySet();
+ 
+    // Get an iterator
+    Iterator i = set.iterator();
+ 
+    // Display elements
+    while(i.hasNext()) {
+    	if(j==N){break;}
+      Map.Entry me = (Map.Entry)i.next();
+      Labels[j++] = me.getValue().toString();
+    }
+  return Mode(Labels);
 
 
 	}
@@ -117,7 +130,13 @@ public class KNN {
 			Labels[i][1] = object.KNN_Algo(object.Test_Set.get(i),N);
 		}
 
-		System.out.println(Labels);
+		System.out.println("Actual Class"+"\t\tPredicted Class");
+		for (String[] row : Labels) {
+			for (String col : row) {
+				System.out.print(col+"\t\t\t");
+			}
+			System.out.println();
+		}
 		
 	}
 
