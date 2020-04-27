@@ -70,15 +70,20 @@ public class KNN {
 		Collections.shuffle(this.File,new Random());
 		this.Train_Set = new ArrayList<>(this.File.subList(0,(int)(this.File.size()*ratio)));
 		this.Test_Set = new ArrayList<>(this.File.subList(this.Train_Set.size(),this.File.size()));
-		System.out.println(this.Train_Set.size()+" "+this.Test_Set.size());
 	}
-	public void csvToArray(String csvFile,boolean headerPresent){
+	public void csvToArray(String csvFile,boolean headerPresent,boolean file_offline){
 		BufferedReader br = null;
 		String line = "";
 		String separator = ",";
 		this.File = new ArrayList<>();
 		try{
+			if(file_offline){
 			br = new BufferedReader(new FileReader(csvFile));
+			}else{
+				URL url = new URL(csvFile);
+				br = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			}
 			while((line = br.readLine()) != null){
 				this.File.add(line.split(separator));
 			}
@@ -113,15 +118,26 @@ public class KNN {
 
 		return;
 	}
+
+	public double Accuracy(String[][] arr){
+		double count=0;
+		for (int i=0;i<arr.length ;i++ ) {
+			if(arr[i][0].equals(arr[i][1])){count++;}
+		}
+		double acc = (count/arr.length)*100;
+		return acc;
+	}
 	
 	public static void main(String[] args) {
 		String csvFile = "Iris_Dataset.csv";
+		// String csvFile = "https://raw.githubusercontent.com/JasbirCodeSpace/AlgorithmsHive/master/KNN/Iris_Dataset.csv";
+		boolean file_offline = true;
 		double splitRatio = 0.8;
 		boolean headerPresent = true;
 		int N = 7;
 
 		KNN object = new KNN();
-		object.csvToArray(csvFile,headerPresent);
+		object.csvToArray(csvFile,headerPresent,file_offline);
 		object.splitSamples(splitRatio);
 
 		String[][] Labels = new String[object.Test_Set.size()][2];
@@ -130,6 +146,7 @@ public class KNN {
 			Labels[i][1] = object.KNN_Algo(object.Test_Set.get(i),N);
 		}
 
+		System.out.println("Accuracy : "+String.format("%.2f",object.Accuracy(Labels))+" %");
 		System.out.println("Actual Class"+"\t\tPredicted Class");
 		for (String[] row : Labels) {
 			for (String col : row) {
