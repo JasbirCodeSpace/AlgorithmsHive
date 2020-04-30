@@ -10,7 +10,7 @@ void insertionSort(int Arr[],int N){
 	{
 		key = Arr[i];
 		j = i;
-		 while(Arr[j-1] > key){
+		 while(j>=1 && Arr[j-1] > key){
 		 	Arr[j] = Arr[j-1];
 		 	j--;
 		 }
