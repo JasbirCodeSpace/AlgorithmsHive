@@ -13,7 +13,6 @@ bubbleSort<-function(arr){
 		isSorted = TRUE
 		if(lastUnsorted>0){
 		for (i in 1:lastUnsorted) {
-		  cat(arr[i],arr[i+1],i,i+1,"\n")
 			if(arr[i] > arr[i+1]){
 				arr[c(i,i+1)] = arr[c(i+1,i)]
 				isSorted = FALSE
