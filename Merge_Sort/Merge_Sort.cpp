@@ -30,17 +30,20 @@ int main(int argc, char const *argv[])
 void mergeSort(int arr[],int n){
 	int temp[n] = {};
 	mergeSort(arr,temp,0,n-1);
+	return;
 }
 
 void mergeSort(int arr[],int temp[],int leftStart,int rightEnd){
-	if (leftStart >= rightEnd)
+	if (leftStart >= rightEnd){
 		return;
+	}
 
 	int middle = (leftStart+rightEnd)/2;
 
 	mergeSort(arr,temp,leftStart,middle);
 	mergeSort(arr,temp,middle+1,rightEnd);
 	mergeHalves(arr,temp,leftStart,rightEnd);
+
 }
 
 void mergeHalves(int arr[],int temp[],int leftStart,int rightEnd){
@@ -64,22 +67,16 @@ void mergeHalves(int arr[],int temp[],int leftStart,int rightEnd){
 		index++;
 	}
 
-	// copy(arr+left,arr+left+(leftEnd-left+1),temp+index);
-	// copy(arr+right,arr+right+(rightEnd-right+1),temp+index);
-	// copy(temp+leftStart,temp+size,arr+leftStart);
-
-	copyArray(arr,left,temp,index,leftEnd-left+1);
-	copyArray(arr,right,temp,index,rightEnd-right+1);
-	copyArray(temp,leftStart,arr,leftStart,size);
+	copyArray(arr,left,temp,index,leftEnd);
+	copyArray(arr,right,temp,index,rightEnd);
+	copyArray(temp,leftStart,arr,leftStart,rightEnd);
 	return;
 }
 
 void copyArray(int a[],int aBegin,int b[],int bBegin,int size){
 
-	for (int i = aBegin; i <= size; ++i)
-	{
-		b[bBegin] = a[i];
-		bBegin++;
+	for(int i=aBegin,j=bBegin;i<=size;i++,j++){
+		b[j] = a[i];
 	}
 	return;
 }
