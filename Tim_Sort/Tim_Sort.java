@@ -17,9 +17,9 @@ public class Tim_Sort{
 		}
 	}
 
-	public static void mergeHalves(int[] arr,int[] temp,int leftStart,int rightEnd){
+	public static void mergeHalves(int[] arr,int[] temp,int leftStart,int mid,int rightEnd){
 
-		int leftEnd = (leftStart+rightEnd)/2;
+		int leftEnd = mid;
 		int rightStart = leftEnd+1;
 		int left = leftStart;
 		int right = rightStart;
@@ -36,6 +36,7 @@ public class Tim_Sort{
 			}
 			index++;
 		}
+
 		System.arraycopy(arr,left,temp,index,leftEnd-left+1);
 		System.arraycopy(arr,right,temp,index,rightEnd-right+1);
 		System.arraycopy(temp,leftStart,arr,leftStart,size);
@@ -45,7 +46,7 @@ public class Tim_Sort{
 	public static void timSort(int[] arr){
 
 		int[] temp = new int[arr.length];
-		int right;
+		int right,mid;
 
 		for (int i=0; i<arr.length ; i+=RUN) {
 			insertionSort(arr,i,Math.min((i+RUN-1),(arr.length-1)));
@@ -55,7 +56,8 @@ public class Tim_Sort{
 			for (int left = 0; left<arr.length ; left+=2*size) {
 				
 				right = Math.min((left + 2*size -1),(arr.length-1));
-				mergeHalves(arr,temp,left,right);
+				mid = left + size - 1;
+				mergeHalves(arr,temp,left,mid,right);
 			}
 			
 		}
